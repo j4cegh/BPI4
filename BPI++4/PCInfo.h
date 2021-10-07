@@ -11,10 +11,13 @@
 #include <atlcore.h>
 
 
+#define DIV 1048576
 
 class PCInfo : public wxFrame
 {
-   
+    
+    
+    
     std::wstring GetStrRegistry(std::string regvalname, LPCTSTR subkey)
     {
         std::wstring stemp = std::wstring(regvalname.begin(), regvalname.end());
@@ -67,6 +70,7 @@ public:
         
         
         
+        
         wxPanel* panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(1920, 1080));
         // enlarge because pc components' names are huge lmao
         PCInfo::SetSize(resX + 400, resY);
@@ -94,14 +98,27 @@ public:
         else {
             std::wstring MBBrand(GetStrRegistry("BaseBoardManufacturer", _T("HARDWARE\\DESCRIPTION\\System\\BIOS")));
             std::wstring MBModel(GetStrRegistry("BaseBoardProduct", _T("HARDWARE\\DESCRIPTION\\System\\BIOS")));
+            MEMORYSTATUSEX mstat;
+            mstat.dwLength = sizeof(mstat);
+            GlobalMemoryStatusEx(&mstat);
+            
             PCInfost->SetLabel(
-                "GPU: " + 
-                gpuName + " " + 
-                PcInfoHelper::getGPUVRAM() + 
-                "GB" + 
-                "\n" + 
-                "CPU: " + PcInfoHelper::GetCpuInfo() + "\n" +
-                "MoBo: " + MBBrand + " " + MBModel + "\n");
+                "GPU: " +
+                gpuName + " " +
+                PcInfoHelper::getGPUVRAM() +
+                "GB" +
+                "\n" +
+                "CPU: " +
+                PcInfoHelper::GetCpuInfo()
+                + "\n" +
+                "RAM: " +
+                std::to_string((int)round(mstat.ullTotalPhys / DIV / 1024 + 0.5)) + "GB" +
+                "\n" +
+                "MoBo: " +
+                MBBrand + 
+                " " + 
+                MBModel + 
+                "\n");
         }
 
 

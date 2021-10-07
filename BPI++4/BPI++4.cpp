@@ -11,12 +11,11 @@ wxDEFINE_EVENT(myEVT_THREAD_UPDATE, wxThreadEvent);
 // define DIV; Byte to MB for memory conversion later
 #define DIV 1048576
 
-MEMORYSTATUSEX status;
 
 class MainFrame : public wxFrame, public wxThreadHelper {
     wxStaticText* textMemoryUsage;
 public:
-    
+    MEMORYSTATUSEX status;
     
     void PCInfoClicked(wxCommandEvent& event)
     {

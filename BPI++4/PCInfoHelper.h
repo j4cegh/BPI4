@@ -4,11 +4,13 @@
 #include <tchar.h>
 #include <string>
 
+#define DIV 1048576
 class PcInfoHelper
 {
     typedef unsigned __int64 QWORD;
 public:
 	PcInfoHelper();
+    
 	~PcInfoHelper();
 	static std::string getGPUVRAM()
 	{
@@ -55,16 +57,7 @@ public:
         }
         return cpu;
     }
-    static std::string GetMBName()
-    {
-        DWORD dwType = REG_SZ;
-        HKEY hkey = 0;
-        char value[1024];
-        DWORD value_len = 1024;
-        RegOpenKey(HKEY_LOCAL_MACHINE, _T("HARDWARE\\DESCRIPTION\\System\\BIOS"), &hkey);
-        RegQueryValueEx(hkey, L"BaseBoardManufacturer", NULL, &dwType, (LPBYTE)&value, &value_len);
-        return std::string(value);
-    }
+    
 private:
 
 };
