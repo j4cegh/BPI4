@@ -1,7 +1,6 @@
 // Main application for BPI++ att4
 #include <wx/wx.h>
 #include <tchar.h>
-#include "CPUFrame.h"
 #include "const.h"
 #include "Common.h"
 #include "PCInfo.h"
@@ -15,11 +14,7 @@ class MainFrame : public wxFrame, public wxThreadHelper {
     wxStaticText* textMemoryUsage;
 public:
     
-    void CPUButtonClicked(wxCommandEvent &event)
-    {
-        CPUFrame* frame = new CPUFrame;
-        frame->Show();
-    };
+    
     void PCInfoClicked(wxCommandEvent& event)
     {
         PCInfo* pcInfo = new PCInfo;
@@ -38,15 +33,12 @@ public:
         wxPanel* panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(1920, 1080));
         // COLORZ
         Common::setBackgroundColor(panel, wxColour(*wxWHITE));
-        // CPU Frame button
-        wxButton* button = new wxButton(panel, wxID_ANY, L"CPU Frame", wxPoint(0, 200), wxSize(200,40));
-        // color of the button
-        button->SetBackgroundColour(wxColor(*wxLIGHT_GREY));
+        
+        
         // set text color to BG color
         Common::BGColortoTextBG(textMemoryUsage, panel);
 
-        // binding to void
-        button->Bind(wxEVT_BUTTON, &MainFrame::CPUButtonClicked, this);
+        
         
         // Just for fun lmao
         Update();

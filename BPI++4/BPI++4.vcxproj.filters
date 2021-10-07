@@ -39,9 +39,6 @@
     <ClInclude Include="const.h">
       <Filter>Header Files\Constants</Filter>
     </ClInclude>
-    <ClInclude Include="CPUFrame.h">
-      <Filter>Header Files\Frames</Filter>
-    </ClInclude>
     <ClInclude Include="PCInfo.h">
       <Filter>Header Files\Frames</Filter>
     </ClInclude>
@@ -50,6 +47,9 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files\Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="PCInfoHelper.h">
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
