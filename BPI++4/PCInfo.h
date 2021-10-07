@@ -15,13 +15,13 @@
 class PCInfo : public wxFrame
 {
    
-    std::wstring GetRegistry(std::string regvalname)
+    std::wstring GetStrRegistry(std::string regvalname, LPCTSTR subkey)
     {
         std::wstring stemp = std::wstring(regvalname.begin(), regvalname.end());
         LPCWSTR sw = stemp.c_str();
         // Try open registry key
         HKEY hKey = NULL;
-        LPCTSTR pszSubkey = _T("HARDWARE\\DESCRIPTION\\System\\BIOS");
+        LPCTSTR pszSubkey = subkey;
         if (RegOpenKey(HKEY_LOCAL_MACHINE, pszSubkey, &hKey) != ERROR_SUCCESS)
         {
             // Error:
@@ -92,8 +92,8 @@ public:
         if (!f)
             std::cout << "problem..";
         else {
-            std::wstring MBBrand(GetRegistry("BaseBoardManufacturer"));
-            std::wstring MBModel(GetRegistry("BaseBoardProduct"));
+            std::wstring MBBrand(GetStrRegistry("BaseBoardManufacturer", _T("HARDWARE\\DESCRIPTION\\System\\BIOS")));
+            std::wstring MBModel(GetStrRegistry("BaseBoardProduct", _T("HARDWARE\\DESCRIPTION\\System\\BIOS")));
             PCInfost->SetLabel(
                 "GPU: " + 
                 gpuName + " " + 
