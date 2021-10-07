@@ -64,7 +64,7 @@ class PCInfo : public wxFrame
     
 public:
     
-    PCInfo() : wxFrame(nullptr, wxID_ANY, wxT("BPI++4 v" + ver)),
+    PCInfo() : wxFrame(nullptr, wxID_ANY, wxT("BPI++4 v" + ver + " | Spec-fetcher")),
         PCInfost(new wxStaticText(this, wxID_ANY, "hey"))
     {
         

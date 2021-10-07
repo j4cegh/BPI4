@@ -51,6 +51,9 @@
     <ClInclude Include="PCInfoHelper.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
+    <ClInclude Include="MemUsage.h">
+      <Filter>Header Files\Frames</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BPI++4.cpp">

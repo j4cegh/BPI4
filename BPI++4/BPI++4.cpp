@@ -4,16 +4,13 @@
 #include "const.h"
 #include "Common.h"
 #include "PCInfo.h"
-#include <atlbase.h>
-#include <atlstr.h>
-// define on thread update; we bind it to a void later
-wxDEFINE_EVENT(myEVT_THREAD_UPDATE, wxThreadEvent);
+#include "MemUsage.h"
+
 // define DIV; Byte to MB for memory conversion later
 #define DIV 1048576
 
 
-class MainFrame : public wxFrame, public wxThreadHelper {
-    wxStaticText* textMemoryUsage;
+class MainFrame : public wxFrame {
 public:
     MEMORYSTATUSEX status;
     
@@ -22,9 +19,13 @@ public:
         PCInfo* pcInfo = new PCInfo;
         pcInfo->Show();
     };
-    MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("BPI++4 v") + ver),
-        // add the memory usage text
-        textMemoryUsage(new wxStaticText(this, wxID_ANY, wxNow()))
+    void RamStatusClicked(wxCommandEvent& event)
+    {
+        MemUsage* memusage = new MemUsage;
+        memusage->Show();
+    };
+    MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("BPI++4 v") + ver + " | Main window")
+        
     {
         
 
@@ -37,87 +38,38 @@ public:
         Common::setBackgroundColor(panel, wxColour(*wxWHITE));
         
         
-        // set text color to BG color
-        Common::BGColortoTextBG(textMemoryUsage, panel);
+        
 
         
         
         // Just for fun lmao
         Update();
-        // set font
-        Common::enlargeAndSetFont(textMemoryUsage, 30, wxFONTFAMILY_DEFAULT);
+
         //self explanatory no comments
         
+        // ramstatus frame
         
-        wxButton* button2 = new wxButton(panel, wxID_ANY, L"PC Info", wxPoint(0, 250), wxSize(200, 40));
+
+        wxButton* button2 = new wxButton(panel, wxID_ANY, L"PC Specs", wxPoint(0, 150), wxSize(200, 40));
         button2->Bind(wxEVT_BUTTON, &MainFrame::PCInfoClicked, this);
         button2->SetBackgroundColour(wxColor(*wxLIGHT_GREY));
 
-        // I guess threading issues?
-        if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR) {
-            wxLogError("Could not create the worker thread!");
-            return;
-        }
-        if (GetThread()->Run() != wxTHREAD_NO_ERROR) {
-            wxLogError("Could not run the worker thread!");
-            return;
-        }
+        wxButton* ramstat = new wxButton(panel, wxID_ANY, L"Memory usage", wxPoint(0, 200), wxSize(200, 40));
+        ramstat->Bind(wxEVT_BUTTON, &MainFrame::RamStatusClicked, this);
+        ramstat->SetBackgroundColour(wxColor(*wxLIGHT_GREY));
 
-        Bind(myEVT_THREAD_UPDATE, &MainFrame::OnThreadUpdate, this);
+        
+
     }
 private:
-    wxThread::ExitCode Entry() override {
+    
 
-        while (!GetThread()->TestDestroy()) {
-            wxThreadEvent* event = new wxThreadEvent(myEVT_THREAD_UPDATE);
-            
-            GlobalMemoryStatusEx(&status);
-            status.dwLength = sizeof(status);
-            int totMemMB = status.ullTotalPhys / DIV;
-            int usedMemMB = totMemMB - status.ullAvailPhys / DIV;
-            int memFreeMB = status.ullAvailPhys / DIV;
-            
-            
-            // Set text of the PC infos
-            event->SetString(
-                "\nMemory usage: \n" +
-                std::to_string(usedMemMB) + "MB / " + 
-                std::to_string(totMemMB) + "MB"
-                + "\n\n" +
-                "Memory free: " + std::to_string(memFreeMB) + "MB"
-            );
-            wxQueueEvent(this, event);
+    
 
-            if (m_shutdownSemaphore.WaitTimeout(1000) != wxSEMA_TIMEOUT)
-            {
-                break;
-            }
-        }
-        return (wxThread::ExitCode)0;
-    }
-
-    void OnClose(wxCloseEvent& event) {
-        auto t = GetThread();
-        if (t) {
-            m_shutdownSemaphore.Post();
-            t->Wait();
-        }
-        event.Skip();
-    }
-
-    void OnThreadUpdate(wxThreadEvent& event)
-    {
-
-        textMemoryUsage->SetLabel(event.GetString());
-    }
-
-    wxSemaphore m_shutdownSemaphore;
-    wxDECLARE_EVENT_TABLE();
+    
 };
 
-wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
-EVT_CLOSE(MainFrame::OnClose)
-wxEND_EVENT_TABLE()
+
 
 class MainApp : public wxApp
 {

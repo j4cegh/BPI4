@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="const.h" />
+    <ClInclude Include="MemUsage.h" />
     <ClInclude Include="NoThreadFrameSample.h" />
     <ClInclude Include="PCInfo.h" />
     <ClInclude Include="PCInfoHelper.h" />

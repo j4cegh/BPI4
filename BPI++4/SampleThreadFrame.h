@@ -1,19 +1,27 @@
 #pragma once
 #include <wx/wx.h>
 #include <tchar.h>
+#include "const.h"
 
 wxDEFINE_EVENT(myEVT_THREAD_UPDATE_CPU, wxThreadEvent);
 
-class ThreadFrame : public wxFrame, public wxThreadHelper
+class MemUsage : public wxFrame, public wxThreadHelper
 {
     wxStaticText* CPUInfo;
 public:
-    ThreadFrame() : wxFrame(nullptr, wxID_ANY, wxT("BPI++4 v69"))
+    MemUsage() : wxFrame(nullptr, wxID_ANY, wxT("BPI++4 v") + ver)
     {
 
+        if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR) {
+            wxLogError("Could not create the worker thread!");
+            return;
+        }
+        if (GetThread()->Run() != wxTHREAD_NO_ERROR) {
+            wxLogError("Could not run the worker thread!");
+            return;
+        }
 
-
-        Bind(myEVT_THREAD_UPDATE_CPU, &ThreadFrame::OnThreadUpdate, this);
+        Bind(myEVT_THREAD_UPDATE_CPU, &MemUsage::OnThreadUpdate, this);
     }
 
 
@@ -58,8 +66,8 @@ private:
     wxSemaphore m_shutdownSemaphore;
     wxDECLARE_EVENT_TABLE();
 };
-wxBEGIN_EVENT_TABLE(ThreadFrame, wxFrame)
-EVT_CLOSE(ThreadFrame::OnClose)
+wxBEGIN_EVENT_TABLE(MemUsage, wxFrame)
+EVT_CLOSE(MemUsage::OnClose)
 wxEND_EVENT_TABLE()
 
 
