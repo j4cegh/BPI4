@@ -4,12 +4,15 @@
 #include "const.h"
 #include "Common.h"
 #include "PCInfo.h"
+#include <atlbase.h>
+#include <atlstr.h>
 // define on thread update; we bind it to a void later
 wxDEFINE_EVENT(myEVT_THREAD_UPDATE, wxThreadEvent);
 // define DIV; Byte to MB for memory conversion later
 #define DIV 1048576
 
 MEMORYSTATUSEX status;
+
 class MainFrame : public wxFrame, public wxThreadHelper {
     wxStaticText* textMemoryUsage;
 public:

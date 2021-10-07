@@ -8,11 +8,54 @@
 #include <array>
 #include <intrin.h>
 #include "PCInfoHelper.h"
+#include <atlcore.h>
 
 
 
 class PCInfo : public wxFrame
 {
+   
+    std::wstring GetRegistry(std::string regvalname)
+    {
+        std::wstring stemp = std::wstring(regvalname.begin(), regvalname.end());
+        LPCWSTR sw = stemp.c_str();
+        // Try open registry key
+        HKEY hKey = NULL;
+        LPCTSTR pszSubkey = _T("HARDWARE\\DESCRIPTION\\System\\BIOS");
+        if (RegOpenKey(HKEY_LOCAL_MACHINE, pszSubkey, &hKey) != ERROR_SUCCESS)
+        {
+            // Error:
+            // throw an exception or something...
+            //
+            // (In production code a custom C++ exception 
+            // derived from std::runtime_error could be used)
+            
+        }
+
+        // Buffer to store string read from registry
+        TCHAR szValue[1024];
+        DWORD cbValueLength = sizeof(szValue);
+
+        // Query string value
+        if (RegQueryValueEx(
+            hKey,
+            sw,
+            NULL,
+            NULL,
+            reinterpret_cast<LPBYTE>(&szValue),
+            &cbValueLength)
+            != ERROR_SUCCESS)
+        {
+            // Error
+            // throw an exception or something...
+            
+        }
+
+
+        std::wstring g(szValue);
+        return g;
+    }
+    
     
     wxStaticText* PCInfost;
     
@@ -49,7 +92,8 @@ public:
         if (!f)
             std::cout << "problem..";
         else {
-            
+            std::wstring MBBrand(GetRegistry("BaseBoardManufacturer"));
+            std::wstring MBModel(GetRegistry("BaseBoardProduct"));
             PCInfost->SetLabel(
                 "GPU: " + 
                 gpuName + " " + 
@@ -57,7 +101,7 @@ public:
                 "GB" + 
                 "\n" + 
                 "CPU: " + PcInfoHelper::GetCpuInfo() + "\n" +
-                "MB: " + "" + "\n");
+                "MoBo: " + MBBrand + " " + MBModel + "\n");
         }
 
 
